@@ -7,8 +7,6 @@ import { Button } from '@/components/ui/button';
 import { Sheet, SheetTrigger, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
 import { EnquiryForm } from '@/components/enquiry-form';
 import { Mail } from 'lucide-react';
-import AnnouncementBar from '@/components/announcement-bar';
-import { getSocialStats, SocialStatsOutput } from '@/ai/flows/get-social-stats';
 
 const Galaxy = dynamic(() => import('@/components/galaxy'), { ssr: false });
 const LetterGlitch = dynamic(() => import('@/components/letter-glitch'), { ssr: false });
@@ -44,26 +42,9 @@ export default function Home() {
     const [clickEffects, setClickEffects] = useState<{id: number, x: number, y: number}[]>([]);
     const [isMounted, setIsMounted] = useState(false);
     const [isSheetOpen, setIsSheetOpen] = useState(false);
-    const [latestPost, setLatestPost] = useState<{ title: string; url: string; platform: string } | null>(null);
 
     useEffect(() => {
         setIsMounted(true);
-        async function fetchLatestPost() {
-            try {
-                const data: SocialStatsOutput = await getSocialStats();
-                if (data.youtubeLatestVideos && data.youtubeLatestVideos.length > 0) {
-                    const latestVideo = data.youtubeLatestVideos[0];
-                    setLatestPost({
-                        title: latestVideo.title,
-                        url: `https://www.youtube.com/watch?v=${latestVideo.videoId}`,
-                        platform: 'YouTube'
-                    });
-                }
-            } catch (error) {
-                console.error("Failed to fetch latest post for announcement bar:", error);
-            }
-        }
-        fetchLatestPost();
     }, []);
 
     const handleInteraction = (e: React.MouseEvent | React.TouchEvent) => {
@@ -88,7 +69,6 @@ export default function Home() {
 
     return (
         <>
-            {latestPost && <AnnouncementBar {...latestPost} />}
             <SplashCursor />
             <main 
                 className="relative h-screen w-screen overflow-hidden flex items-center justify-center"
