@@ -4,6 +4,7 @@ import { useState, useEffect, memo, useRef } from 'react';
 import VariableProximity from './variable-proximity';
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@/components/ui/tooltip';
 import RotatingText from './RotatingText';
+import AnimatedRiseKeepShine from './AnimatedRiseKeepShine';
 
 
 const HeroContent = () => {
@@ -96,6 +97,11 @@ const HeroContent = () => {
                         {displayedTagline}
                         <span className="inline-block w-[2px] h-6 bg-accent animate-pulse ml-1 translate-y-1"></span>
                     </p>
+                    <div className="mt-8">
+                      <div className="text-xl md:text-3xl font-bold">
+                        <AnimatedRiseKeepShine />
+                      </div>
+                    </div>
                   </>
                 )}
             </div>
