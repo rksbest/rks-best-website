@@ -82,8 +82,8 @@ const AnimatedRiseKeepShine = () => {
   };
 
   return (
-    <style>
-      {`
+    <div className="w-full">
+      <style>{`
         @keyframes fade-in-up {
           from {
             opacity: 0;
@@ -188,8 +188,11 @@ const AnimatedRiseKeepShine = () => {
         .animate-fade-in-down {
           animation: fade-in-down 0.6s ease-out forwards;
         }
-      `}
-    </style>
+      `}</style>
+      <div className={getAnimationClass(animation)}>
+        {renderText()}
+      </div>
+    </div>
   );
 };
 
