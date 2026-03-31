@@ -100,7 +100,12 @@ export async function sendVerificationCode(
 ): Promise<{ success: boolean; message: string; token?: string }> {
   if (!resendApiKey || !resendDomain || !verificationSecret) {
     console.error(
-      'RESEND_API_KEY, RESEND_DOMAIN, or VERIFICATION_SECRET environment variable is not set.'
+      '[v0] RESEND_API_KEY, RESEND_DOMAIN, or VERIFICATION_SECRET environment variable is not set.',
+      {
+        hasApiKey: !!resendApiKey,
+        hasDomain: !!resendDomain,
+        hasSecret: !!verificationSecret,
+      }
     );
     return { success: false, message: 'Server configuration error.' };
   }
@@ -121,16 +126,18 @@ export async function sendVerificationCode(
   const token = `${encodedEmail}.${expires}.${signature}`;
 
   try {
-    await resend.emails.send({
+    console.log('[v0] Sending verification email with Resend', { email, code: verificationCode });
+    const response = await resend.emails.send({
       from: `RKS.Best Verification <verify@${resendDomain}>`,
       to: email,
       subject: 'Your Verification Code for RKS.Best',
       react: VerificationEmail({ verificationCode }),
       text: `Your verification code is: ${verificationCode}`,
     });
+    console.log('[v0] Resend email send response:', response);
     return { success: true, message: 'Verification code sent.', token };
   } catch (error) {
-    console.error('Resend API Error (Verification):', error);
+    console.error('[v0] Resend API Error (Verification):', error);
     return { success: false, message: 'Failed to send verification code.' };
   }
 }
