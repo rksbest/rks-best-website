@@ -98,8 +98,12 @@ const LetterGlitch: FC<LetterGlitchProps> = ({
   const drawLetters = () => {
     if (!context.current || !canvasRef.current || letters.current.length === 0) return;
     const ctx = context.current;
-    const { width, height } = canvasRef.current.getBoundingClientRect();
-    ctx.clearRect(0, 0, width, height);
+    const canvas = canvasRef.current;
+    const { width, height } = canvas.getBoundingClientRect();
+    
+    ctx.fillStyle = 'rgba(13, 17, 23, 0.05)';
+    ctx.fillRect(0, 0, width, height);
+    
     ctx.font = `${fontSize}px monospace`;
     ctx.textBaseline = 'top';
 
@@ -107,8 +111,10 @@ const LetterGlitch: FC<LetterGlitchProps> = ({
       const x = (index % grid.current.columns) * charWidth;
       const y = Math.floor(index / grid.current.columns) * charHeight;
       ctx.fillStyle = letter.color;
+      ctx.globalAlpha = 0.9;
       ctx.fillText(letter.char, x, y);
     });
+    ctx.globalAlpha = 1;
   };
   
   const resizeCanvas = () => {

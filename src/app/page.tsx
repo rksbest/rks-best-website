@@ -4,6 +4,7 @@ import { useState, useEffect, memo } from 'react';
 import dynamic from 'next/dynamic';
 import HeroContent from '@/components/hero-content';
 import Footer from '@/components/footer';
+import AnimatedWordsSection from '@/components/animated-words-section';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetTrigger, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
 import { EnquiryForm } from '@/components/enquiry-form';
@@ -131,6 +132,8 @@ export default function Home() {
                         </div>
                     </SheetContent>
                 </Sheet>
+
+                <AnimatedWordsSection />
 
                 <Footer />
             </main>
