@@ -4,14 +4,11 @@ import { useState, useEffect, memo } from 'react';
 import dynamic from 'next/dynamic';
 import HeroContent from '@/components/hero-content';
 import Footer from '@/components/footer';
-import AnimatedWordsSection from '@/components/animated-words-section';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetTrigger, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
 import { EnquiryForm } from '@/components/enquiry-form';
 import { Mail } from 'lucide-react';
 
-const Galaxy = dynamic(() => import('@/components/galaxy'), { ssr: false });
-const LetterGlitch = dynamic(() => import('@/components/letter-glitch'), { ssr: false });
 const SplashCursor = dynamic(() => import('@/components/splash-cursor'), { ssr: false });
 const MemoizedHeroContent = memo(HeroContent);
 
@@ -72,27 +69,9 @@ export default function Home() {
     return (
         <>
             <SplashCursor />
-            <main 
-                className="relative min-h-screen w-screen overflow-x-hidden flex flex-col"
-            >
-                {/* Background animations - layered properly */}
-                <div className="fixed inset-0 -z-20 w-full h-full">
-                    <Galaxy 
-                      mouseRepulsion={true}
-                      mouseInteraction={true}
-                      density={1.5}
-                      glowIntensity={0.5}
-                      saturation={0.8}
-                      hueShift={240}
-                    />
-                </div>
-
-                <div className="fixed inset-0 -z-10 w-full h-full opacity-40">
-                    <LetterGlitch />
-                </div>
-                
+            <main className="relative min-h-screen w-screen overflow-x-hidden flex flex-col bg-background">
                 {/* Main content */}
-                <div className="relative z-0 flex-1 flex items-center justify-center"
+                <div className="flex-1 flex items-center justify-center"
                      onClick={handleInteraction}
                      onTouchStart={handleInteraction}>
                   <MemoizedHeroContent />
@@ -137,15 +116,8 @@ export default function Home() {
                     </SheetContent>
                 </Sheet>
 
-                {/* Animated words section */}
-                <div className="relative z-10">
-                    <AnimatedWordsSection />
-                </div>
-
                 {/* Footer */}
-                <div className="relative z-10">
-                    <Footer />
-                </div>
+                <Footer />
             </main>
         </>
     );
