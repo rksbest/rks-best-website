@@ -3,6 +3,7 @@
 import { useState, useEffect, memo } from 'react';
 import dynamic from 'next/dynamic';
 import HeroContent from '@/components/hero-content';
+import Footer from '@/components/footer';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetTrigger, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
 import { EnquiryForm } from '@/components/enquiry-form';
@@ -71,9 +72,7 @@ export default function Home() {
         <>
             <SplashCursor />
             <main 
-                className="relative h-screen w-screen overflow-hidden flex items-center justify-center"
-                onClick={handleInteraction}
-                onTouchStart={handleInteraction}
+                className="relative min-h-screen w-screen overflow-x-hidden flex flex-col"
             >
                 <div className="absolute inset-0 -z-10 opacity-30">
                     <LetterGlitch />
@@ -88,11 +87,16 @@ export default function Home() {
                       hueShift={240}
                     />
                 </div>
-                <MemoizedHeroContent />
+                
+                <div className="flex-1 flex items-center justify-center"
+                     onClick={handleInteraction}
+                     onTouchStart={handleInteraction}>
+                  <MemoizedHeroContent />
 
-                {clickEffects.map(effect => (
-                    <ClickEffect key={effect.id} {...effect} onComplete={removeClickEffect} />
-                ))}
+                  {clickEffects.map(effect => (
+                      <ClickEffect key={effect.id} {...effect} onComplete={removeClickEffect} />
+                  ))}
+                </div>
 
                 <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
                     <SheetTrigger asChild>
@@ -127,6 +131,8 @@ export default function Home() {
                         </div>
                     </SheetContent>
                 </Sheet>
+
+                <Footer />
             </main>
         </>
     );
