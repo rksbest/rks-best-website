@@ -74,7 +74,7 @@ export default function Home() {
             <main 
                 className="relative min-h-screen w-screen overflow-x-hidden flex flex-col"
             >
-                <div className="absolute inset-0 -z-10 opacity-30">
+                <div className="absolute inset-0 -z-10 opacity-60">
                     <LetterGlitch />
                 </div>
                 <div className="absolute inset-0 -z-20">
