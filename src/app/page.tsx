@@ -75,10 +75,8 @@ export default function Home() {
             <main 
                 className="relative min-h-screen w-screen overflow-x-hidden flex flex-col"
             >
-                <div className="absolute inset-0 -z-10 opacity-100">
-                    <LetterGlitch />
-                </div>
-                <div className="absolute inset-0 -z-20">
+                {/* Background animations - layered properly */}
+                <div className="fixed inset-0 -z-20 w-full h-full">
                     <Galaxy 
                       mouseRepulsion={true}
                       mouseInteraction={true}
@@ -88,8 +86,13 @@ export default function Home() {
                       hueShift={240}
                     />
                 </div>
+
+                <div className="fixed inset-0 -z-10 w-full h-full opacity-40">
+                    <LetterGlitch />
+                </div>
                 
-                <div className="flex-1 flex items-center justify-center"
+                {/* Main content */}
+                <div className="relative z-0 flex-1 flex items-center justify-center"
                      onClick={handleInteraction}
                      onTouchStart={handleInteraction}>
                   <MemoizedHeroContent />
@@ -99,12 +102,13 @@ export default function Home() {
                   ))}
                 </div>
 
+                {/* Contact button */}
                 <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
                     <SheetTrigger asChild>
                         <Button
                             variant="ghost"
                             size="icon"
-                            className="fixed bottom-6 right-6 z-20 h-20 w-20 p-0 transition-all duration-300 group"
+                            className="fixed bottom-6 right-6 z-50 h-20 w-20 p-0 transition-all duration-300 group"
                         >
                             <span className="absolute inline-flex h-full w-full rounded-full bg-success opacity-75 animate-green-blink"></span>
                             <div className="relative w-full h-full transition-transform duration-700 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)] flex items-center justify-center">
@@ -133,9 +137,15 @@ export default function Home() {
                     </SheetContent>
                 </Sheet>
 
-                <AnimatedWordsSection />
+                {/* Animated words section */}
+                <div className="relative z-10">
+                    <AnimatedWordsSection />
+                </div>
 
-                <Footer />
+                {/* Footer */}
+                <div className="relative z-10">
+                    <Footer />
+                </div>
             </main>
         </>
     );
