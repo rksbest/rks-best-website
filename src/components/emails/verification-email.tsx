@@ -23,10 +23,10 @@ export const VerificationEmail: React.FC<Readonly<VerificationEmailProps>> = ({
     }}>
       <div style={{ textAlign: 'center', marginBottom: '30px' }}>
         <img 
-          src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/RKS%20Logo_20260401_194150_0000.gif-ZPSbFc9oCMRzX5cEADINv9GhX24Pu5.jpeg"
-          alt="RKS Best Logo"
+          src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/RKS%20Logo_20260324_210353_0000-DQefPGce7KB0TzNoOM0Grb217zXwHy.png"
+          alt="RKS Logo"
           style={{
-            height: '60px',
+            height: '70px',
             width: 'auto',
             objectFit: 'contain',
           }}
@@ -99,29 +99,20 @@ export const VerificationEmail: React.FC<Readonly<VerificationEmailProps>> = ({
         paddingTop: '20px',
         borderTop: '1px solid #e0e0e0',
       }}>
-        <div style={{ marginBottom: '15px' }}>
-          <img 
-            src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/RKS%20Logo_20260401_194150_0000.gif-ZPSbFc9oCMRzX5cEADINv9GhX24Pu5.jpeg"
-            alt="RKS Best Logo Footer"
-            style={{
-              height: '40px',
-              width: 'auto',
-              objectFit: 'contain',
-              opacity: '0.8',
-            }}
-          />
-        </div>
-        <p style={{
-          fontSize: '12px',
-          color: '#999',
-          margin: '10px 0 0 0',
-        }}>
-          RKS.Best - Rise. Keep. Shine.
-        </p>
+        <img 
+          src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/RKS%20Logo_20260324_210353_0000-DQefPGce7KB0TzNoOM0Grb217zXwHy.png"
+          alt="RKS Logo"
+          style={{
+            height: '35px',
+            width: 'auto',
+            objectFit: 'contain',
+            marginBottom: '10px',
+          }}
+        />
         <p style={{
           fontSize: '11px',
           color: '#bbb',
-          margin: '5px 0',
+          margin: '0',
         }}>
           This is an automated message. Please do not reply to this email.
         </p>
