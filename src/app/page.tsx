@@ -3,15 +3,12 @@
 import { useState, useEffect, memo } from 'react';
 import dynamic from 'next/dynamic';
 import HeroContent from '@/components/hero-content';
+import Footer from '@/components/footer';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetTrigger, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
 import { EnquiryForm } from '@/components/enquiry-form';
 import { Mail } from 'lucide-react';
-import AnnouncementBar from '@/components/announcement-bar';
-import { getSocialStats, SocialStatsOutput } from '@/ai/flows/get-social-stats';
 
-const Galaxy = dynamic(() => import('@/components/galaxy'), { ssr: false });
-const LetterGlitch = dynamic(() => import('@/components/letter-glitch'), { ssr: false });
 const SplashCursor = dynamic(() => import('@/components/splash-cursor'), { ssr: false });
 const MemoizedHeroContent = memo(HeroContent);
 
@@ -44,26 +41,9 @@ export default function Home() {
     const [clickEffects, setClickEffects] = useState<{id: number, x: number, y: number}[]>([]);
     const [isMounted, setIsMounted] = useState(false);
     const [isSheetOpen, setIsSheetOpen] = useState(false);
-    const [latestPost, setLatestPost] = useState<{ title: string; url: string; platform: string } | null>(null);
 
     useEffect(() => {
         setIsMounted(true);
-        async function fetchLatestPost() {
-            try {
-                const data: SocialStatsOutput = await getSocialStats();
-                if (data.youtubeLatestVideos && data.youtubeLatestVideos.length > 0) {
-                    const latestVideo = data.youtubeLatestVideos[0];
-                    setLatestPost({
-                        title: latestVideo.title,
-                        url: `https://www.youtube.com/watch?v=${latestVideo.videoId}`,
-                        platform: 'YouTube'
-                    });
-                }
-            } catch (error) {
-                console.error("Failed to fetch latest post for announcement bar:", error);
-            }
-        }
-        fetchLatestPost();
     }, []);
 
     const handleInteraction = (e: React.MouseEvent | React.TouchEvent) => {
@@ -88,38 +68,26 @@ export default function Home() {
 
     return (
         <>
-            {latestPost && <AnnouncementBar {...latestPost} />}
             <SplashCursor />
-            <main 
-                className="relative h-screen w-screen overflow-hidden flex items-center justify-center"
-                onClick={handleInteraction}
-                onTouchStart={handleInteraction}
-            >
-                <div className="absolute inset-0 -z-10 opacity-30">
-                    <LetterGlitch />
-                </div>
-                <div className="absolute inset-0 -z-20">
-                    <Galaxy 
-                      mouseRepulsion={true}
-                      mouseInteraction={true}
-                      density={1.5}
-                      glowIntensity={0.5}
-                      saturation={0.8}
-                      hueShift={240}
-                    />
-                </div>
-                <MemoizedHeroContent />
+            <main className="relative min-h-screen w-screen overflow-x-hidden flex flex-col bg-background">
+                {/* Main content */}
+                <div className="flex-1 flex items-center justify-center"
+                     onClick={handleInteraction}
+                     onTouchStart={handleInteraction}>
+                  <MemoizedHeroContent />
 
-                {clickEffects.map(effect => (
-                    <ClickEffect key={effect.id} {...effect} onComplete={removeClickEffect} />
-                ))}
+                  {clickEffects.map(effect => (
+                      <ClickEffect key={effect.id} {...effect} onComplete={removeClickEffect} />
+                  ))}
+                </div>
 
+                {/* Contact button */}
                 <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
                     <SheetTrigger asChild>
                         <Button
                             variant="ghost"
                             size="icon"
-                            className="fixed bottom-6 right-6 z-20 h-20 w-20 p-0 transition-all duration-300 group"
+                            className="fixed bottom-6 right-6 z-50 h-20 w-20 p-0 transition-all duration-300 group"
                         >
                             <span className="absolute inline-flex h-full w-full rounded-full bg-success opacity-75 animate-green-blink"></span>
                             <div className="relative w-full h-full transition-transform duration-700 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)] flex items-center justify-center">
@@ -147,6 +115,9 @@ export default function Home() {
                         </div>
                     </SheetContent>
                 </Sheet>
+
+                {/* Footer */}
+                <Footer />
             </main>
         </>
     );

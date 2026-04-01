@@ -6,6 +6,7 @@ import { handleEnquiry, sendVerificationCode, verifyCode, type EnquiryFormState 
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { DigitInput } from '@/components/digit-input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Loader2, CheckCircle2, XCircle } from 'lucide-react';
@@ -262,7 +263,7 @@ export function EnquiryForm({ onFormSubmit }: { onFormSubmit: () => void }) {
 
         <div className="space-y-2">
           <Label htmlFor="mobile">Mobile Number</Label>
-          <Input id="mobile" name="mobile" type="tel" placeholder="Your Mobile Number" required minLength={10} readOnly={isSuccess} />
+          <DigitInput id="mobile" name="mobile" type="tel" placeholder="Your Mobile Number" required minLength={10} readOnly={isSuccess} />
         </div>
         
         <div className="space-y-2">
