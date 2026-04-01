@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 interface FloatingLinesProps {
   enabledWaves?: ('top' | 'middle' | 'bottom')[];
@@ -12,7 +12,7 @@ interface FloatingLinesProps {
   parallax?: boolean;
 }
 
-export const FloatingLines: React.FC<FloatingLinesProps> = ({
+export default function FloatingLines({
   enabledWaves = ['top', 'middle', 'bottom'],
   lineCount = 5,
   lineDistance = 5,
@@ -20,10 +20,10 @@ export const FloatingLines: React.FC<FloatingLinesProps> = ({
   bendStrength = -0.5,
   interactive = true,
   parallax = true,
-}) => {
+}: FloatingLinesProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-  const animationRef = useRef<number>();
+  const mouseRef = useRef({ x: 0, y: 0 });
+  const timeRef = useRef(0);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -32,82 +32,93 @@ export const FloatingLines: React.FC<FloatingLinesProps> = ({
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    canvas.width = canvas.offsetWidth;
-    canvas.height = canvas.offsetHeight;
+    const updateCanvasSize = () => {
+      canvas.width = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
+    };
+    updateCanvasSize();
+    window.addEventListener('resize', updateCanvasSize);
 
-    const wavePositions: { [key: string]: number } = { top: 0.25, middle: 0.5, bottom: 0.75 };
-    const lineCountArray = Array.isArray(lineCount) ? lineCount : [lineCount, lineCount, lineCount];
-    const lineDistanceArray = Array.isArray(lineDistance) ? lineDistance : [lineDistance, lineDistance, lineDistance];
-    let time = 0;
+    const getLineCount = (index: number) =>
+      Array.isArray(lineCount) ? lineCount[index] : lineCount;
+    const getLineDistance = (index: number) =>
+      Array.isArray(lineDistance) ? lineDistance[index] : lineDistance;
 
-    const drawWave = (
-      waveType: string,
-      yRatio: number,
-      count: number,
-      distance: number,
-      index: number
-    ) => {
-      const baseY = canvas.height * yRatio;
-      const color = `rgba(${100 + index * 50}, ${150 - index * 30}, 200, ${0.3 - index * 0.1})`;
-      
-      ctx.strokeStyle = color;
-      ctx.lineWidth = 2;
+    const drawWave = (waveY: number, waveIndex: number, amplitude: number) => {
+      const count = getLineCount(waveIndex);
+      const distance = getLineDistance(waveIndex);
 
       for (let i = 0; i < count; i++) {
-        const xStart = (i / count) * canvas.width;
+        const startX = i * distance * 40;
+        const points: { x: number; y: number }[] = [];
+
+        for (let x = startX; x < startX + distance * 40; x += 5) {
+          const offset = parallax ? (mouseRef.current.x / canvas.width) * 20 : 0;
+          const y =
+            waveY +
+            Math.sin((x + timeRef.current * 2 + offset) / bendRadius) *
+              bendStrength *
+              amplitude;
+          points.push({ x, y });
+        }
+
+        ctx.strokeStyle = `rgba(100, 200, 255, ${0.3 + waveIndex * 0.2})`;
+        ctx.lineWidth = 2;
         ctx.beginPath();
-        ctx.moveTo(xStart, baseY);
-
-        let yOffset = Math.sin((time * 0.01 + i * 0.5) + (waveType === 'top' ? 0 : waveType === 'bottom' ? Math.PI : Math.PI / 2)) * 30;
-        
-        if (interactive && parallax) {
-          yOffset += (mousePos.y - canvas.height / 2) * 0.05 * (index + 1) * 0.1;
+        if (points.length > 0) {
+          ctx.moveTo(points[0].x, points[0].y);
+          for (let j = 1; j < points.length; j++) {
+            const xc = (points[j - 1].x + points[j].x) / 2;
+            const yc = (points[j - 1].y + points[j].y) / 2;
+            ctx.quadraticCurveTo(points[j - 1].x, points[j - 1].y, xc, yc);
+          }
         }
-
-        for (let x = 0; x < canvas.width; x += bendRadius) {
-          const waveX = xStart + x;
-          const waveY = baseY + yOffset + Math.sin((waveX * 0.01 + time * 0.005)) * bendStrength * 10;
-          ctx.lineTo(waveX, waveY);
-        }
-
         ctx.stroke();
       }
     };
 
     const animate = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = 'rgba(13, 17, 23, 0.1)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      enabledWaves.forEach((wave, index) => {
-        const yRatio = wavePositions[wave];
-        const count = lineCountArray[index] || lineCountArray[0];
-        const distance = lineDistanceArray[index] || lineDistanceArray[0];
-        drawWave(wave, yRatio, count, distance, index);
-      });
+      timeRef.current += 0.016;
 
-      time++;
-      animationRef.current = requestAnimationFrame(animate);
+      if (enabledWaves.includes('top')) {
+        drawWave(100, 0, 30);
+      }
+      if (enabledWaves.includes('middle')) {
+        drawWave(canvas.height / 2, 1, 40);
+      }
+      if (enabledWaves.includes('bottom')) {
+        drawWave(canvas.height - 100, 2, 30);
+      }
+
+      requestAnimationFrame(animate);
     };
+
+    const handleMouseMove = (e: MouseEvent) => {
+      if (interactive) {
+        const rect = canvas.getBoundingClientRect();
+        mouseRef.current = {
+          x: e.clientX - rect.left,
+          y: e.clientY - rect.top,
+        };
+      }
+    };
+
+    if (interactive) {
+      window.addEventListener('mousemove', handleMouseMove);
+    }
 
     animate();
 
     return () => {
-      if (animationRef.current) cancelAnimationFrame(animationRef.current);
-    };
-  }, [enabledWaves, lineCount, lineDistance, bendRadius, bendStrength, interactive, parallax, mousePos]);
-
-  useEffect(() => {
-    if (!interactive) return;
-
-    const handleMouseMove = (e: MouseEvent) => {
-      if (canvasRef.current) {
-        const rect = canvasRef.current.getBoundingClientRect();
-        setMousePos({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+      window.removeEventListener('resize', updateCanvasSize);
+      if (interactive) {
+        window.removeEventListener('mousemove', handleMouseMove);
       }
     };
-
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, [interactive]);
+  }, [enabledWaves, bendRadius, bendStrength, interactive, parallax, lineCount, lineDistance]);
 
   return (
     <canvas
@@ -116,10 +127,7 @@ export const FloatingLines: React.FC<FloatingLinesProps> = ({
         width: '100%',
         height: '100%',
         display: 'block',
-        background: 'linear-gradient(135deg, #0d1117 0%, #1a2332 100%)',
       }}
     />
   );
-};
-
-export default FloatingLines;
+}
