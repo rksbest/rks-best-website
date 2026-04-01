@@ -223,8 +223,8 @@ const LetterGlitch: FC<LetterGlitchProps> = ({
   }, [glitchSpeed, smooth]);
 
   return (
-    <div className="relative w-full h-full bg-black overflow-hidden">
-      <canvas ref={canvasRef} className="block w-full h-full" />
+    <div className="relative w-full h-full overflow-hidden bg-transparent">
+      <canvas ref={canvasRef} className="block w-full h-full bg-transparent" />
       {outerVignette && (
         <div
           className="absolute top-0 left-0 w-full h-full pointer-events-none bg-[radial-gradient(circle,_rgba(0,0,0,0)_60%,_rgba(0,0,0,1)_100%)]"
