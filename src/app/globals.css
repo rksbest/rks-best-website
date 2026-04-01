@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Dark theme initialization */
 html {
   background-color: #0d1117;
   color-scheme: dark;
